@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="RestoGestion"/>
+<meta name="theme-color" content="#0f1117"/>
+<title>RestoGestion PRO</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1117;color:#e8ecf4;min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:#181c27}
+::-webkit-scrollbar-thumb{background:#2a3045;border-radius:2px}
+input,select,textarea,button{font-family:inherit;}
+.btn{cursor:pointer;border:none;border-radius:8px;font-weight:600;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+.btn:active{transform:scale(.96);}
+.card{background:#1e2333;border:1px solid #2a3045;border-radius:12px;}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.rh:hover{background:rgba(245,166,35,.06)!important;}
+.fi{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.pu{animation:pulse 1.4s infinite}
+.hidden{display:none!important}
+/* HEADER */
+#header{background:#181c27;border-bottom:1px solid #2a3045;padding:0 14px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
+#header .logo{display:flex;align-items:center;gap:8px;}
+#header .logo span{font-weight:800;font-size:18px;color:#f5a623;letter-spacing:-0.5px;}
+#header .logo .badge{background:#c47d0e;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;}
+#header .hbtns{display:flex;gap:7px;}
+/* NAV */
+#nav{background:#181c27;border-bottom:1px solid #2a3045;display:flex;overflow-x:auto;padding:0 8px;-webkit-overflow-scrolling:touch;}
+#nav::-webkit-scrollbar{display:none}
+.tab-btn{background:none;border:none;cursor:pointer;padding:13px 13px;font-size:13px;font-weight:400;color:#7a8599;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;}
+.tab-btn.active{color:#f5a623;font-weight:700;border-bottom:2px solid #f5a623;}
+/* MAIN */
+#main{padding:16px;max-width:1100px;margin:0 auto;padding-bottom:40px;}
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+.kpi{padding:16px 18px;}
+.kpi .kpi-label{font-size:11px;font-weight:700;color:#7a8599;text-transform:uppercase;letter-spacing:.8px;}
+.kpi .kpi-val{font-size:24px;font-weight:800;margin-top:4px;}
+.kpi .kpi-sub{font-size:11px;color:#7a8599;margin-top:2px;}
+.kpi .kpi-icon{font-size:28px;float:right;margin-top:-2px;}
+/* TABLES */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;}
+th{padding:9px 12px;text-align:left;font-size:11px;font-weight:700;color:#7a8599;text-transform:uppercase;background:#181c27;white-space:nowrap;}
+td{padding:9px 12px;font-size:13px;border-top:1px solid #2a3045;}
+/* FORM */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-group label{font-size:11px;font-weight:700;color:#7a8599;text-transform:uppercase;letter-spacing:.5px;}
+.inp{background:#181c27;border:1px solid #2a3045;color:#e8ecf4;padding:9px 11px;border-radius:8px;font-size:13px;width:100%;outline:none;}
+.inp:focus{border-color:#f5a623;}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:center;justify-content:center;padding:12px;}
+.modal{background:#1e2333;border:1px solid #2a3045;border-radius:14px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;padding:22px;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.modal-title{font-size:17px;font-weight:800;}
+.modal-close{background:none;border:none;cursor:pointer;color:#7a8599;font-size:22px;line-height:1;}
+/* CAT PILLS */
+.cat-section-header{padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2a3045;}
+/* SECTION HEADERS */
+.section-title{font-size:11px;font-weight:700;color:#7a8599;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;}
+/* PROGRESS BAR */
+.progress-bar{height:7px;background:#2a3045;border-radius:4px;overflow:hidden;margin:10px 18px;}
+.progress-fill{height:100%;border-radius:4px;transition:width .5s;}
+/* TABS in modal */
+.mode-tabs{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid #2a3045;margin-bottom:18px;}
+.mode-tab{flex:1;padding:10px 6px;font-size:12px;font-weight:600;background:#181c27;color:#7a8599;border:none;cursor:pointer;transition:all .15s;}
+.mode-tab.active{background:#f5a623;color:#000;}
+/* BARCODE result */
+.product-card{display:flex;gap:12px;align-items:flex-start;padding:14px;background:#181c27;border-radius:10px;margin-top:14px;}
+.product-img{width:68px;height:68px;object-fit:contain;border-radius:8px;background:#0f1117;flex-shrink:0;}
+.product-img-placeholder{width:68px;height:68px;border-radius:8px;background:#2a3045;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+/* Group colors */
+.grp-RESTAURANT{color:#e67e22}
+.grp-BAR{color:#3498db}
+.grp-AUTRE{color:#9b59b6}
+/* SAFE AREA for iPhone */
+body{padding-bottom:env(safe-area-inset-bottom);}
+@media(max-width:480px){
+  .kpi-val{font-size:20px;}
+  #header .logo span{font-size:16px;}
+  th,td{padding:7px 9px;}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zxing-js/0.21.3/umd/index.min.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="logo">
+    <span>🍴</span>
+    <span>RestoGestion</span>
+    <span class="badge">PRO</span>
+  </div>
+  <div class="hbtns">
+    <button class="btn" onclick="openScanFacture()" style="background:#f5a623;color:#000;padding:8px 12px;font-size:13px;">📷 Facture</button>
+    <button class="btn" onclick="openAddPurchase()" style="background:#1e2333;border:1px solid #2a3045;color:#e8ecf4;padding:8px 12px;font-size:13px;">+ Achat</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div id="nav">
+  <button class="tab-btn active" onclick="switchTab('dashboard',this)">📊 Tableau de bord</button>
+  <button class="tab-btn" onclick="switchTab('achats',this)">🛒 Achats</button>
+  <button class="tab-btn" onclick="switchTab('ventes',this)">💰 CA / Ventes</button>
+  <button class="tab-btn" onclick="switchTab('inventaire',this)">📋 Inventaire</button>
+  <button class="tab-btn" onclick="switchTab('marges',this)">📈 Marges</button>
+  <button class="tab-btn" onclick="switchTab('tva',this)">🧾 TVA</button>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="tab-dashboard" class="fi"></div>
+  <div id="tab-achats" class="fi hidden"></div>
+  <div id="tab-ventes" class="fi hidden"></div>
+  <div id="tab-inventaire" class="fi hidden"></div>
+  <div id="tab-marges" class="fi hidden"></div>
+  <div id="tab-tva" class="fi hidden"></div>
+</div>
+
+<!-- MODALS container -->
+<div id="modals"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+const TVA = {
+  CUISINE_FRAIS:    {label:"Cuisine – Produits frais",          rate:5.5,  color:"#2ecc71", icon:"🥩", group:"RESTAURANT"},
+  CUISINE_SEC:      {label:"Cuisine – Épicerie / Secs",         rate:5.5,  color:"#27ae60", icon:"🧂", group:"RESTAURANT"},
+  CUISINE_SURGELE:  {label:"Cuisine – Surgelés",                rate:5.5,  color:"#16a085", icon:"❄️", group:"RESTAURANT"},
+  NOURRITURE_RESTO: {label:"Restauration – Nourriture",         rate:10,   color:"#e67e22", icon:"🍽️", group:"RESTAURANT"},
+  BAR_SANS_ALCOOL:  {label:"Bar – Sans alcool (soda, café…)",   rate:10,   color:"#3498db", icon:"☕", group:"BAR"},
+  BAR_AVEC_ALCOOL:  {label:"Bar – Avec alcool",                 rate:20,   color:"#e74c3c", icon:"🍺", group:"BAR"},
+  AUTRE_20:         {label:"Autres – TVA 20%",                  rate:20,   color:"#9b59b6", icon:"📦", group:"AUTRE"},
+};
+const GROUPS = {
+  RESTAURANT:{label:"🍽️ Restaurant",color:"#e67e22"},
+  BAR:{label:"🍺 Bar",color:"#3498db"},
+  AUTRE:{label:"📦 Autres",color:"#9b59b6"},
+};
+
+const SK="restogestion_v3";
+function loadDB(){try{return JSON.parse(localStorage.getItem(SK))||{};}catch{return{};}}
+function saveDB(){try{localStorage.setItem(SK,JSON.stringify({purchases:DB.purchases,sales:DB.sales,inventory:DB.inventory}));}catch{}}
+
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const mKey=d=>(d||today()).slice(0,7);
+const fmt=n=>Number(n||0).toFixed(2)+" €";
+const pct=n=>Number(n||0).toFixed(1)+"%";
+const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+const stored=loadDB();
+const DB={
+  purchases: stored.purchases || [
+    {id:uid(),date:today(),supplier:"Metro",ref:"FAC-001",category:"CUISINE_FRAIS",product:"Filet de bœuf",qty:5,unit:"kg",unitPrice:28.5,tvaRate:5.5,totalHT:142.5,totalTTC:150.34},
+    {id:uid(),date:today(),supplier:"Transgourmet",ref:"FAC-002",category:"CUISINE_SURGELE",product:"Frites surgelées",qty:10,unit:"kg",unitPrice:3.2,tvaRate:5.5,totalHT:32,totalTTC:33.76},
+    {id:uid(),date:today(),supplier:"Latur Boissons",ref:"FAC-003",category:"BAR_SANS_ALCOOL",product:"Sirop menthe 1L",qty:12,unit:"btl",unitPrice:4.5,tvaRate:10,totalHT:54,totalTTC:59.4},
+    {id:uid(),date:today(),supplier:"Latur Boissons",ref:"FAC-003",category:"BAR_AVEC_ALCOOL",product:"Bière Heineken fût",qty:3,unit:"fût",unitPrice:65,tvaRate:20,totalHT:195,totalTTC:234},
+    {id:uid(),date:today(),supplier:"Promocash",ref:"FAC-004",category:"CUISINE_SEC",product:"Huile tournesol 5L",qty:6,unit:"btl",unitPrice:8.9,tvaRate:5.5,totalHT:53.4,totalTTC:56.34},
+  ],
+  sales: stored.sales || [
+    {id:uid(),date:today(),month:mKey(today()),category:"NOURRITURE_RESTO",labelCA:"CA Cuisine",amountHT:4200,tvaRate:10,amountTTC:4620},
+    {id:uid(),date:today(),month:mKey(today()),category:"BAR_SANS_ALCOOL",labelCA:"CA Bar sans alcool",amountHT:1200,tvaRate:10,amountTTC:1320},
+    {id:uid(),date:today(),month:mKey(today()),category:"BAR_AVEC_ALCOOL",labelCA:"CA Bar alcool",amountHT:800,tvaRate:20,amountTTC:960},
+  ],
+  inventory: stored.inventory || [],
+};
+
+function guessCat(info){
+  const s=((info.product_name||"")+" "+(info.categories||"")+" "+(info.labels||"")).toLowerCase();
+  if(/bière|beer|lager|ale|stout|cidre|cider|vin |wine|whisky|vodka|rhum|rum|gin|cognac|champagne|prosecco|alcool/.test(s))return"BAR_AVEC_ALCOOL";
+  if(/coca|pepsi|soda|cola|limonade|orangina|fanta|sprite|schweppes|sirop|jus|nectar|ice tea|eau |water|café|coffee|thé |tea|lait|milk/.test(s))return"BAR_SANS_ALCOOL";
+  if(/surgelé|frozen|glacé/.test(s))return"CUISINE_SURGELE";
+  if(/viande|boeuf|poulet|porc|agneau|saumon|thon|fromage|yaourt|crème|beurre|œuf/.test(s))return"CUISINE_FRAIS";
+  return"CUISINE_SEC";
+}
+
+// ═══════════════════════════════════════════════════════════
+// ROUTING
+// ═══════════════════════════════════════════════════════════
+let currentTab="dashboard";
+function switchTab(tab,btn){
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  document.querySelectorAll("[id^='tab-']").forEach(el=>el.classList.add("hidden"));
+  const el=document.getElementById("tab-"+tab);
+  if(el){el.classList.remove("hidden");el.classList.add("fi");}
+  currentTab=tab;
+  renderTab(tab);
+}
+function renderTab(tab){
+  const el=document.getElementById("tab-"+tab);
+  if(!el)return;
+  if(tab==="dashboard")  el.innerHTML=renderDashboard();
+  if(tab==="achats")     el.innerHTML=renderAchats();
+  if(tab==="ventes")     el.innerHTML=renderVentes();
+  if(tab==="inventaire") el.innerHTML=renderInventaire();
+  if(tab==="marges")     el.innerHTML=renderMarges();
+  if(tab==="tva")        el.innerHTML=renderTVA();
+}
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════
+function renderDashboard(){
+  const cm=mKey(today());
+  const mp=DB.purchases.filter(p=>mKey(p.date)===cm);
+  const ms=DB.sales.filter(s=>s.month===cm);
+  const tA=mp.reduce((a,p)=>a+Number(p.totalHT),0);
+  const tC=ms.reduce((a,s)=>a+Number(s.amountHT),0);
+  const mg=tC-tA;
+  const mgp=tC>0?(mg/tC)*100:0;
+
+  let groupsHTML="";
+  Object.entries(GROUPS).forEach(([gk,gv])=>{
+    const cats=Object.entries(TVA).filter(([,v])=>v.group===gk).map(([k])=>k);
+    const gA=mp.filter(p=>cats.includes(p.category)).reduce((a,p)=>a+Number(p.totalHT),0);
+    const gC=ms.filter(s=>cats.includes(s.category)).reduce((a,s)=>a+Number(s.amountHT),0);
+    const gM=gC-gA; const gMp=gC>0?(gM/gC)*100:0;
+    const barW=gC>0?Math.min(100,((gC-gA)/gC)*100):0;
+    groupsHTML+=`<div class="card" style="padding:16px">
+      <div style="font-weight:700;font-size:14px;color:${gv.color};margin-bottom:12px">${gv.label}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><div style="font-size:10px;color:#7a8599;font-weight:700;text-transform:uppercase">CA HT</div><div style="font-size:15px;font-weight:700;color:#2ecc71">${fmt(gC)}</div></div>
+        <div><div style="font-size:10px;color:#7a8599;font-weight:700;text-transform:uppercase">Achats HT</div><div style="font-size:15px;font-weight:700;color:#e67e22">${fmt(gA)}</div></div>
+        <div style="grid-column:1/-1"><div style="font-size:10px;color:#7a8599;font-weight:700;text-transform:uppercase">Marge</div><div style="font-size:15px;font-weight:700;color:${gM>=0?'#2ecc71':'#e74c3c'}">${fmt(gM)} (${pct(gMp)})</div></div>
+      </div>
+      ${gC>0?`<div style="height:6px;background:#2a3045;border-radius:3px;margin-top:10px;overflow:hidden"><div style="height:100%;width:${barW}%;background:${gM>=0?'#2ecc71':'#e74c3c'};border-radius:3px;transition:width .5s"></div></div>`:""}
+    </div>`;
+  });
+
+  let recentHTML="";
+  mp.slice(0,5).forEach(p=>{
+    const cat=TVA[p.category]||{};
+    recentHTML+=`<tr class="rh">
+      <td>${esc(p.date)}</td><td style="font-weight:600">${esc(p.supplier)}</td><td>${esc(p.product)}</td>
+      <td><span class="pill" style="background:${cat.color}22;color:${cat.color}">${cat.icon||""} ${(cat.label||"").split("–")[1]?.trim()||""}</span></td>
+      <td style="font-weight:700">${fmt(p.totalHT)}</td><td style="color:#7a8599">${fmt(p.totalTTC)}</td>
+    </tr>`;
+  });
+
+  return`<div>
+    <div style="margin-bottom:18px">
+      <h2 style="font-size:20px;font-weight:800">Tableau de bord</h2>
+      <p style="color:#7a8599;font-size:13px;margin-top:3px">Mois en cours : ${cm}</p>
+    </div>
+    <div class="kpi-grid">
+      <div class="card kpi"><span class="kpi-icon">💰</span><div class="kpi-label">CA HT</div><div class="kpi-val" style="color:#2ecc71">${fmt(tC)}</div></div>
+      <div class="card kpi"><span class="kpi-icon">🛒</span><div class="kpi-label">Achats HT</div><div class="kpi-val" style="color:#e67e22">${fmt(tA)}</div></div>
+      <div class="card kpi"><span class="kpi-icon">📈</span><div class="kpi-label">Marge brute</div><div class="kpi-val" style="color:${mg>=0?'#2ecc71':'#e74c3c'}">${fmt(mg)}</div><div class="kpi-sub">${pct(mgp)}</div></div>
+      <div class="card kpi"><span class="kpi-icon">🧾</span><div class="kpi-label">Lignes achat</div><div class="kpi-val">${mp.length}</div></div>
+    </div>
+    <p class="section-title">RÉPARTITION PAR SECTEUR</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:22px">${groupsHTML}</div>
+    <p class="section-title">DERNIERS ACHATS</p>
+    <div class="card tbl-wrap">
+      <table><thead><tr><th>Date</th><th>Fournisseur</th><th>Produit</th><th>Catégorie</th><th>HT</th><th>TTC</th></tr></thead>
+      <tbody>${recentHTML||'<tr><td colspan="6" style="text-align:center;color:#7a8599;padding:20px">Aucun achat ce mois</td></tr>'}</tbody></table>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACHATS
+// ═══════════════════════════════════════════════════════════
+function renderAchats(filter="ALL",search="",mf="ALL"){
+  const months=[...new Set(DB.purchases.map(p=>mKey(p.date)))].sort().reverse();
+  let filtered=DB.purchases
+    .filter(p=>filter==="ALL"||p.category===filter)
+    .filter(p=>mf==="ALL"||mKey(p.date)===mf)
+    .filter(p=>!search||p.product.toLowerCase().includes(search.toLowerCase())||p.supplier.toLowerCase().includes(search.toLowerCase()));
+  const tHT=filtered.reduce((a,p)=>a+Number(p.totalHT),0);
+
+  // Group by category
+  const byCat={};
+  filtered.forEach(p=>{if(!byCat[p.category])byCat[p.category]={items:[],totalHT:0,totalTTC:0};byCat[p.category].items.push(p);byCat[p.category].totalHT+=Number(p.totalHT);byCat[p.category].totalTTC+=Number(p.totalTTC);});
+
+  const monthOpts=months.map(m=>`<option value="${m}" ${mf===m?"selected":""}>${m}</option>`).join("");
+  const catOpts=Object.entries(TVA).map(([k,v])=>`<option value="${k}" ${filter===k?"selected":""}>${v.icon} ${v.label}</option>`).join("");
+
+  let groupsHTML="";
+  Object.entries(GROUPS).forEach(([gk,gv])=>{
+    const groupCats=Object.entries(TVA).filter(([,v])=>v.group===gk).map(([k])=>k);
+    const groupData=Object.entries(byCat).filter(([cat])=>groupCats.includes(cat));
+    if(!groupData.length)return;
+    const gHT=groupData.reduce((a,[,v])=>a+v.totalHT,0);
+    let catsHTML="";
+    groupData.forEach(([ck,cd])=>{
+      const cat=TVA[ck];
+      let rows=cd.items.map(p=>`<tr class="rh">
+        <td>${esc(p.date)}</td><td style="font-weight:600">${esc(p.supplier)}</td><td style="color:#7a8599;font-size:11px">${esc(p.ref)}</td>
+        <td>${esc(p.product)}</td><td>${p.qty}</td><td style="color:#7a8599">${esc(p.unit)}</td>
+        <td>${fmt(p.unitPrice)}</td><td style="font-weight:700">${fmt(p.totalHT)}</td><td style="color:#7a8599">${fmt(p.totalTTC)}</td>
+        <td><button onclick="deletePurchase('${p.id}')" style="background:none;border:none;cursor:pointer;color:#e74c3c;font-size:16px">🗑</button></td>
+      </tr>`).join("");
+      catsHTML+=`<div style="background:${cat.color}0d;border-bottom:1px solid #2a3045;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
+        <span style="font-size:13px;font-weight:600;color:${cat.color}">${cat.icon} ${cat.label} — TVA ${cat.rate}%</span>
+        <span style="font-size:13px;color:${cat.color}">HT: ${fmt(cd.totalHT)} / TTC: ${fmt(cd.totalTTC)}</span>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Fourn.</th><th>Réf.</th><th>Produit</th><th>Qté</th><th>U</th><th>PU HT</th><th>Total HT</th><th>TTC</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    });
+    groupsHTML+=`<div class="card" style="margin-bottom:16px;overflow:hidden">
+      <div style="padding:11px 14px;background:#181c27;border-bottom:1px solid #2a3045;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:700;font-size:14px;color:${gv.color}">${gv.label}</span>
+        <span style="font-size:13px;font-weight:600">Total HT : ${fmt(gHT)}</span>
+      </div>${catsHTML}</div>`;
+  });
+
+  return`<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div><h2 style="font-size:20px;font-weight:800">Achats</h2><p style="color:#7a8599;font-size:13px">${filtered.length} ligne(s) — HT: ${fmt(tHT)}</p></div>
+      <button class="btn" onclick="openAddPurchase()" style="background:#f5a623;color:#000;padding:9px 16px">+ Nouvel achat</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <input class="inp" style="min-width:180px;flex:1" placeholder="🔍 Rechercher…" value="${esc(search)}" oninput="rerenderAchats('${filter}',this.value,'${mf}')"/>
+      <select class="inp" style="width:auto" onchange="rerenderAchats('${filter}','${esc(search)}',this.value)"><option value="ALL">Tous les mois</option>${monthOpts}</select>
+      <select class="inp" style="width:auto" onchange="rerenderAchats(this.value,'${esc(search)}','${mf}')"><option value="ALL">Toutes catégories</option>${catOpts}</select>
+    </div>
+    ${groupsHTML||`<div class="card" style="padding:30px;text-align:center;color:#7a8599">Aucun achat trouvé</div>`}
+  </div>`;
+}
+function rerenderAchats(f,s,m){document.getElementById("tab-achats").innerHTML=renderAchats(f,s,m);}
+function deletePurchase(id){if(!confirm("Supprimer cet achat ?"))return;DB.purchases=DB.purchases.filter(p=>p.id!==id);saveDB();renderTab(currentTab);}
+
+// ═══════════════════════════════════════════════════════════
+// VENTES
+// ═══════════════════════════════════════════════════════════
+function renderVentes(mf){
+  const months=[...new Set(DB.sales.map(s=>s.month))].sort().reverse();
+  if(!mf)mf=months[0]||mKey(today());
+  const filtered=DB.sales.filter(s=>s.month===mf);
+  const tHT=filtered.reduce((a,s)=>a+Number(s.amountHT),0);
+  const tTTC=filtered.reduce((a,s)=>a+Number(s.amountTTC),0);
+  const monthOpts=months.map(m=>`<option value="${m}" ${mf===m?"selected":""}>${m}</option>`).join("");
+  let rows=filtered.map(s=>{
+    const cat=TVA[s.category]||{};
+    return`<tr class="rh">
+      <td>${esc(s.date)}</td><td style="font-weight:600">${esc(s.labelCA)}</td>
+      <td><span class="pill" style="background:${cat.color}22;color:${cat.color}">${cat.icon||""} ${(cat.label||"").split("–")[1]?.trim()||cat.label||""}</span></td>
+      <td>${s.tvaRate}%</td><td style="font-weight:700;color:#2ecc71">${fmt(s.amountHT)}</td>
+      <td>${fmt(s.amountTTC)}</td><td style="color:#e67e22">${fmt(s.amountTTC-s.amountHT)}</td>
+      <td><button onclick="deleteSale('${s.id}')" style="background:none;border:none;cursor:pointer;color:#e74c3c;font-size:16px">🗑</button></td>
+    </tr>`;
+  }).join("");
+  return`<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <h2 style="font-size:20px;font-weight:800">Chiffre d'affaires</h2>
+      <div style="display:flex;gap:8px">
+        <select class="inp" style="width:auto" onchange="rerenderVentes(this.value)">${monthOpts}</select>
+        <button class="btn" onclick="openAddSale()" style="background:#f5a623;color:#000;padding:9px 14px">+ Saisir CA</button>
+      </div>
+    </div>
+    <div class="kpi-grid" style="margin-bottom:16px">
+      <div class="card kpi"><div class="kpi-label">CA HT</div><div class="kpi-val" style="color:#2ecc71">${fmt(tHT)}</div></div>
+      <div class="card kpi"><div class="kpi-label">CA TTC</div><div class="kpi-val" style="color:#3498db">${fmt(tTTC)}</div></div>
+      <div class="card kpi"><div class="kpi-label">TVA collectée</div><div class="kpi-val" style="color:#e67e22">${fmt(tTTC-tHT)}</div></div>
+    </div>
+    <div class="card tbl-wrap">
+      <table><thead><tr><th>Date</th><th>Libellé</th><th>Catégorie</th><th>TVA %</th><th>HT</th><th>TTC</th><th>TVA coll.</th><th></th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="8" style="text-align:center;color:#7a8599;padding:20px">Aucune vente</td></tr>'}</tbody>
+      <tfoot><tr style="background:#181c27;border-top:2px solid #2a3045">
+        <td colspan="4" style="font-weight:700;padding:9px 12px">TOTAL</td>
+        <td style="font-weight:700;color:#2ecc71;padding:9px 12px">${fmt(tHT)}</td>
+        <td style="font-weight:700;padding:9px 12px">${fmt(tTTC)}</td>
+        <td style="font-weight:700;color:#e67e22;padding:9px 12px">${fmt(tTTC-tHT)}</td><td></td>
+      </tr></tfoot></table>
+    </div>
+  </div>`;
+}
+function rerenderVentes(m){document.getElementById("tab-ventes").innerHTML=renderVentes(m);}
+function deleteSale(id){if(!confirm("Supprimer ?"))return;DB.sales=DB.sales.filter(s=>s.id!==id);saveDB();renderTab(currentTab);}
+
+// ═══════════════════════════════════════════════════════════
+// INVENTAIRE
+// ═══════════════════════════════════════════════════════════
+function renderInventaire(){
+  const tA=DB.inventory.reduce((a,i)=>a+i.qty*i.costPrice,0);
+  const tV=DB.inventory.reduce((a,i)=>a+i.qty*i.sellingPrice,0);
+  const catOpts=Object.entries(TVA).map(([k,v])=>`<option value="${k}">${v.icon} ${v.label}</option>`).join("");
+  let rows=DB.inventory.map(i=>{
+    const cat=TVA[i.category]||{};
+    const mU=i.sellingPrice-i.costPrice;
+    const mPU=i.sellingPrice>0?(mU/i.sellingPrice)*100:0;
+    return`<tr class="rh">
+      <td>${i.image?`<img src="${esc(i.image)}" style="width:34px;height:34px;object-fit:contain;border-radius:6px;background:#0f1117">`:`<span style="font-size:20px">${cat.icon||"📦"}</span>`}</td>
+      <td style="font-weight:600">${esc(i.product)}</td>
+      <td style="font-size:11px;font-family:monospace;color:#7a8599">${esc(i.barcode||"—")}</td>
+      <td><span class="pill" style="background:${cat.color}22;color:${cat.color}">${cat.icon||""}</span></td>
+      <td style="font-weight:700">${i.qty}</td><td style="color:#7a8599">${esc(i.unit)}</td>
+      <td>${fmt(i.costPrice)}</td><td style="color:#e67e22;font-weight:600">${fmt(i.qty*i.costPrice)}</td>
+      <td>${fmt(i.sellingPrice)}</td><td style="color:#2ecc71;font-weight:600">${fmt(i.qty*i.sellingPrice)}</td>
+      <td style="color:${mU>=0?'#2ecc71':'#e74c3c'}">${fmt(mU)} <small>(${pct(mPU)})</small></td>
+      <td style="white-space:nowrap">
+        <button onclick="editInventory('${i.id}')" style="background:none;border:none;cursor:pointer;font-size:15px">✏️</button>
+        <button onclick="deleteInventory('${i.id}')" style="background:none;border:none;cursor:pointer;color:#e74c3c;font-size:15px">🗑</button>
+      </td>
+    </tr>`;
+  }).join("");
+
+  return`<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:10px">
+      <div><h2 style="font-size:20px;font-weight:800">Inventaire</h2>
+        <p style="color:#7a8599;font-size:13px">Achat: <strong style="color:#e67e22">${fmt(tA)}</strong> · Vente: <strong style="color:#2ecc71">${fmt(tV)}</strong></p>
+      </div>
+      <button class="btn" onclick="openBarcodeScanner()" style="background:#1a2a4a;border:2px solid #3498db;color:#3498db;padding:9px 14px;font-size:14px;font-weight:700">📱 Scanner code-barres</button>
+    </div>
+    <!-- FORM ADD -->
+    <div class="card" style="padding:16px;margin-bottom:16px" id="inv-form-wrap">
+      <div style="font-size:12px;font-weight:700;color:#7a8599;text-transform:uppercase;margin-bottom:12px" id="inv-form-title">AJOUTER UN PRODUIT</div>
+      <input type="hidden" id="inv-edit-id"/>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <input class="inp" id="inv-product" placeholder="Nom du produit *" style="flex:1"/>
+        <button class="btn" onclick="openBarcodeScanner()" title="Scanner" style="background:#3498db22;border:1px solid #3498db;color:#3498db;padding:9px 11px;font-size:18px;flex-shrink:0">📱</button>
+      </div>
+      <input type="hidden" id="inv-barcode"/>
+      <input type="hidden" id="inv-image"/>
+      <div class="form-grid">
+        <div class="form-group"><label>Catégorie</label><select class="inp" id="inv-category">${catOpts}</select></div>
+        <div class="form-group"><label>Quantité *</label><input class="inp" type="number" id="inv-qty" placeholder="0"/></div>
+        <div class="form-group"><label>Unité</label><input class="inp" id="inv-unit" value="pce"/></div>
+        <div class="form-group"><label>Coût achat/U (€)</label><input class="inp" type="number" id="inv-cost" placeholder="0.00" step="0.01"/></div>
+        <div class="form-group"><label>Prix vente/U (€)</label><input class="inp" type="number" id="inv-sell" placeholder="0.00" step="0.01"/></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn" onclick="saveInventory()" style="background:#f5a623;color:#000;padding:9px 18px" id="inv-save-btn">+ Ajouter</button>
+        <button class="btn" onclick="cancelEditInventory()" id="inv-cancel-btn" style="background:#1e2333;border:1px solid #2a3045;color:#e8ecf4;padding:9px 18px;display:none">Annuler</button>
+      </div>
+    </div>
+    <!-- TABLE -->
+    <div class="card tbl-wrap">
+      <table><thead><tr><th></th><th>Produit</th><th>Code-barres</th><th>Cat.</th><th>Qté</th><th>U</th><th>Coût/U</th><th>Val.achat</th><th>PV/U</th><th>Val.vente</th><th>Marge/U</th><th></th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="12" style="text-align:center;color:#7a8599;padding:24px">Aucun produit — scanner un code-barres ou ajouter manuellement</td></tr>'}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+function saveInventory(){
+  const product=document.getElementById("inv-product")?.value?.trim();
+  const qty=Number(document.getElementById("inv-qty")?.value);
+  if(!product||!qty){alert("Nom et quantité requis");return;}
+  const item={
+    id:document.getElementById("inv-edit-id")?.value||uid(),
+    product,barcode:document.getElementById("inv-barcode")?.value||"",
+    image:document.getElementById("inv-image")?.value||"",
+    category:document.getElementById("inv-category")?.value||"CUISINE_FRAIS",
+    qty,unit:document.getElementById("inv-unit")?.value||"pce",
+    costPrice:Number(document.getElementById("inv-cost")?.value)||0,
+    sellingPrice:Number(document.getElementById("inv-sell")?.value)||0,
+  };
+  const editId=document.getElementById("inv-edit-id")?.value;
+  if(editId){DB.inventory=DB.inventory.map(i=>i.id===editId?item:i);}
+  else{DB.inventory=[...DB.inventory,item];}
+  saveDB();renderTab("inventaire");
+}
+function editInventory(id){
+  const i=DB.inventory.find(x=>x.id===id); if(!i)return;
+  document.getElementById("inv-edit-id").value=i.id;
+  document.getElementById("inv-product").value=i.product;
+  document.getElementById("inv-barcode").value=i.barcode||"";
+  document.getElementById("inv-image").value=i.image||"";
+  document.getElementById("inv-category").value=i.category;
+  document.getElementById("inv-qty").value=i.qty;
+  document.getElementById("inv-unit").value=i.unit;
+  document.getElementById("inv-cost").value=i.costPrice;
+  document.getElementById("inv-sell").value=i.sellingPrice;
+  document.getElementById("inv-form-title").textContent="MODIFIER LE PRODUIT";
+  document.getElementById("inv-save-btn").textContent="💾 Mettre à jour";
+  document.getElementById("inv-cancel-btn").style.display="";
+  document.getElementById("inv-form-wrap").scrollIntoView({behavior:"smooth"});
+}
+function cancelEditInventory(){
+  document.getElementById("inv-edit-id").value="";
+  document.getElementById("inv-product").value="";
+  document.getElementById("inv-barcode").value="";
+  document.getElementById("inv-image").value="";
+  document.getElementById("inv-qty").value="";
+  document.getElementById("inv-cost").value="";
+  document.getElementById("inv-sell").value="";
+  document.getElementById("inv-form-title").textContent="AJOUTER UN PRODUIT";
+  document.getElementById("inv-save-btn").textContent="+ Ajouter";
+  document.getElementById("inv-cancel-btn").style.display="none";
+}
+function deleteInventory(id){if(!confirm("Supprimer ?"))return;DB.inventory=DB.inventory.filter(i=>i.id!==id);saveDB();renderTab("inventaire");}
+
+// Fill inventory form from barcode result
+function fillInventoryFromBarcode(info){
+  const cat=guessCat(info);
+  if(document.getElementById("inv-product"))document.getElementById("inv-product").value=info.product_name||"";
+  if(document.getElementById("inv-barcode"))document.getElementById("inv-barcode").value=info.barcode||"";
+  if(document.getElementById("inv-image"))document.getElementById("inv-image").value=info.image_front_url||"";
+  if(document.getElementById("inv-category"))document.getElementById("inv-category").value=cat;
+  if(info.quantity){
+    const u=(info.quantity.includes("L")||info.quantity.includes("cl"))?"btl":"pce";
+    if(document.getElementById("inv-unit"))document.getElementById("inv-unit").value=u;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MARGES
+// ═══════════════════════════════════════════════════════════
+function renderMarges(){
+  const months=[...new Set([...DB.purchases.map(p=>mKey(p.date)),...DB.sales.map(s=>s.month)])].sort().reverse();
+  if(!months.length)return`<div class="card" style="padding:30px;text-align:center;color:#7a8599">Pas encore de données</div>`;
+  let html=`<div><div style="margin-bottom:18px"><h2 style="font-size:20px;font-weight:800">Marges mensuelles</h2><p style="color:#7a8599;font-size:13px">CA vs Achats par mois et secteur</p></div>`;
+  months.forEach(month=>{
+    const mp=DB.purchases.filter(p=>mKey(p.date)===month);
+    const ms=DB.sales.filter(s=>s.month===month);
+    const tA=mp.reduce((a,p)=>a+Number(p.totalHT),0);
+    const tC=ms.reduce((a,s)=>a+Number(s.amountHT),0);
+    const mg=tC-tA; const mgp=tC>0?(mg/tC)*100:0;
+    const barW=Math.min(100,Math.max(0,mgp));
+    const barCol=mgp>=60?"#2ecc71":mgp>=30?"#e67e22":"#e74c3c";
+
+    let groupCols="";
+    Object.entries(GROUPS).forEach(([gk,gv])=>{
+      const gc=Object.entries(TVA).filter(([,v])=>v.group===gk).map(([k])=>k);
+      const gA=mp.filter(p=>gc.includes(p.category)).reduce((a,p)=>a+Number(p.totalHT),0);
+      const gC=ms.filter(s=>gc.includes(s.category)).reduce((a,s)=>a+Number(s.amountHT),0);
+      const gM=gC-gA; const gMp=gC>0?(gM/gC)*100:0;
+      groupCols+=`<div style="padding:12px 16px;border-top:1px solid #2a3045">
+        <div style="font-size:11px;font-weight:700;color:${gv.color};margin-bottom:6px">${gv.label}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+          <div><div style="font-size:10px;color:#7a8599">CA HT</div><div style="font-size:13px;font-weight:700;color:#2ecc71">${fmt(gC)}</div></div>
+          <div><div style="font-size:10px;color:#7a8599">Achats HT</div><div style="font-size:13px;font-weight:700;color:#e67e22">${fmt(gA)}</div></div>
+          <div style="grid-column:1/-1"><div style="font-size:10px;color:#7a8599">Marge</div><div style="font-size:13px;font-weight:700;color:${gM>=0?"#2ecc71":"#e74c3c"}">${fmt(gM)} (${pct(gMp)})</div></div>
+        </div>
+      </div>`;
+    });
+
+    let catRows="";
+    Object.entries(TVA).forEach(([ck,cat])=>{
+      const cA=mp.filter(p=>p.category===ck).reduce((a,p)=>a+Number(p.totalHT),0);
+      const cC=ms.filter(s=>s.category===ck).reduce((a,s)=>a+Number(s.amountHT),0);
+      if(cA===0&&cC===0)return;
+      const cM=cC-cA; const cMp=cC>0?(cM/cC)*100:0;
+      catRows+=`<tr class="rh">
+        <td><span class="pill" style="background:${cat.color}22;color:${cat.color}">${cat.icon} ${cat.label}</span></td>
+        <td>${cat.rate}%</td><td style="color:#e67e22">${fmt(cA)}</td><td style="color:#2ecc71">${fmt(cC)}</td>
+        <td style="font-weight:700;color:${cM>=0?"#2ecc71":"#e74c3c"}">${fmt(cM)}</td>
+        <td style="color:${cMp>=50?"#2ecc71":"#e67e22"}">${pct(cMp)}</td>
+      </tr>`;
+    });
+
+    html+=`<div class="card" style="margin-bottom:18px;overflow:hidden">
+      <div style="padding:12px 16px;background:#181c27;border-bottom:1px solid #2a3045;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span style="font-size:16px;font-weight:800">${month}</span>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <span style="font-size:13px">CA: <strong style="color:#2ecc71">${fmt(tC)}</strong></span>
+          <span style="font-size:13px">Achats: <strong style="color:#e67e22">${fmt(tA)}</strong></span>
+          <span style="font-size:13px">Marge: <strong style="color:${mg>=0?"#2ecc71":"#e74c3c"}">${fmt(mg)} (${pct(mgp)})</strong></span>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${barW}%;background:${barCol}"></div></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">${groupCols}</div>
+      <div class="tbl-wrap" style="border-top:1px solid #2a3045">
+        <table><thead><tr><th>Catégorie</th><th>TVA</th><th>Achats HT</th><th>CA HT</th><th>Marge HT</th><th>Taux</th></tr></thead>
+        <tbody>${catRows}</tbody></table>
+      </div>
+    </div>`;
+  });
+  return html+"</div>";
+}
+
+// ═══════════════════════════════════════════════════════════
+// TVA
+// ═══════════════════════════════════════════════════════════
+function renderTVA(mf){
+  const months=[...new Set([...DB.purchases.map(p=>mKey(p.date)),...DB.sales.map(s=>s.month)])].sort().reverse();
+  if(!mf)mf=months[0]||mKey(today());
+  const mp=DB.purchases.filter(p=>mKey(p.date)===mf);
+  const ms=DB.sales.filter(s=>s.month===mf);
+  const monthOpts=months.map(m=>`<option value="${m}" ${mf===m?"selected":""}>${m}</option>`).join("");
+  let blocks="";
+  [5.5,10,20].forEach(rate=>{
+    const rs=ms.filter(s=>s.tvaRate===rate);
+    const rp=mp.filter(p=>Number(p.tvaRate)===rate);
+    if(!rs.length&&!rp.length)return;
+    const tc=rs.reduce((a,s)=>a+(Number(s.amountTTC)-Number(s.amountHT)),0);
+    const td=rp.reduce((a,p)=>a+(Number(p.totalTTC)-Number(p.totalHT)),0);
+    const tn=tc-td;
+    let vRows=rs.map(s=>`<div style="padding:6px 14px;display:flex;justify-content:space-between;border-bottom:1px solid #2a303522;font-size:12px"><span>${esc(s.labelCA)}</span><span style="color:#2ecc71">+${fmt(Number(s.amountTTC)-Number(s.amountHT))}</span></div>`).join("");
+    let aRows=rp.map(p=>`<div style="padding:6px 14px;display:flex;justify-content:space-between;border-bottom:1px solid #2a303522;font-size:12px"><span>${esc(p.product)}</span><span style="color:#e67e22">-${fmt(Number(p.totalTTC)-Number(p.totalHT))}</span></div>`).join("");
+    blocks+=`<div class="card" style="margin-bottom:16px;overflow:hidden">
+      <div style="padding:11px 16px;background:#181c27;border-bottom:1px solid #2a3045;font-weight:700;font-size:14px">Taux TVA ${rate}%</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+        <div style="padding:14px 16px;border-right:1px solid #2a3045"><div style="font-size:10px;color:#7a8599;font-weight:700;text-transform:uppercase">TVA collectée</div><div style="font-size:20px;font-weight:800;color:#2ecc71;margin-top:4px">${fmt(tc)}</div></div>
+        <div style="padding:14px 16px;border-right:1px solid #2a3045"><div style="font-size:10px;color:#7a8599;font-weight:700;text-transform:uppercase">TVA déductible</div><div style="font-size:20px;font-weight:800;color:#e67e22;margin-top:4px">${fmt(td)}</div></div>
+        <div style="padding:14px 16px"><div style="font-size:10px;color:#7a8599;font-weight:700;text-transform:uppercase">TVA nette à payer</div><div style="font-size:20px;font-weight:800;color:${tn>=0?"#e74c3c":"#2ecc71"};margin-top:4px">${fmt(tn)}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #2a3045">
+        <div><div style="padding:8px 14px;font-size:11px;font-weight:700;color:#2ecc71;border-bottom:1px solid #2a3045">VENTES (${rate}%)</div>${vRows||'<div style="padding:10px 14px;font-size:12px;color:#7a8599">—</div>'}</div>
+        <div style="border-left:1px solid #2a3045"><div style="padding:8px 14px;font-size:11px;font-weight:700;color:#e67e22;border-bottom:1px solid #2a3045">ACHATS (${rate}%)</div>${aRows||'<div style="padding:10px 14px;font-size:12px;color:#7a8599">—</div>'}</div>
+      </div>
+    </div>`;
+  });
+  return`<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div><h2 style="font-size:20px;font-weight:800">Récapitulatif TVA</h2><p style="color:#7a8599;font-size:13px">TVA collectée vs déductible</p></div>
+      <select class="inp" style="width:auto" onchange="rerenderTVA(this.value)">${monthOpts}</select>
+    </div>
+    ${blocks||`<div class="card" style="padding:30px;text-align:center;color:#7a8599">Pas de données pour ce mois</div>`}
+  </div>`;
+}
+function rerenderTVA(m){document.getElementById("tab-tva").innerHTML=renderTVA(m);}
+
+// ═══════════════════════════════════════════════════════════
+// BARCODE SCANNER MODAL
+// ═══════════════════════════════════════════════════════════
+function openBarcodeScanner(){
+  const catOpts=Object.entries(TVA).map(([k,v])=>`<option value="${k}">${v.icon} ${v.label}</option>`).join("");
+  const html=`<div class="overlay" id="modal-barcode" onclick="if(event.target===this)closeModal('modal-barcode')">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header">
+      <span class="modal-title">📱 Scanner un code-barres</span>
+      <button class="modal-close" onclick="closeModal('modal-barcode')">×</button>
+    </div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchBarcodeMode('photo',this)">📷 Photo</button>
+      <button class="mode-tab" onclick="switchBarcodeMode('manual',this)">⌨️ Manuel</button>
+      <button class="mode-tab" onclick="switchBarcodeMode('gallery',this)">🖼️ Galerie</button>
+    </div>
+    <div id="bc-body">
+      ${renderBarcodeBody("photo")}
+    </div>
+  </div>
+</div>`;
+  document.getElementById("modals").innerHTML=html;
+}
+function switchBarcodeMode(mode,btn){
+  document.querySelectorAll(".mode-tab").forEach(b=>b.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  document.getElementById("bc-body").innerHTML=renderBarcodeBody(mode);
+}
+function renderBarcodeBody(mode){
+  if(mode==="photo")return`
+    <div style="text-align:center">
+      <div style="background:#181c27;border:2px dashed #3498db;border-radius:14px;padding:28px 16px;margin-bottom:14px">
+        <div style="font-size:52px;margin-bottom:10px">📷</div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:6px">Prends en photo le code-barres</div>
+        <div style="color:#7a8599;font-size:12px;margin-bottom:18px">Cadre bien le code-barres.<br>L'IA lit le numéro automatiquement.</div>
+        <label style="cursor:pointer">
+          <input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleBarcodeImage(this)"/>
+          <span class="btn" style="background:#3498db;color:#fff;padding:12px 26px;font-size:15px;border-radius:10px;cursor:pointer">📷 Ouvrir l'appareil photo</span>
+        </label>
+      </div>
+      <div id="bc-loading" style="display:none;padding:20px;text-align:center">
+        <div class="pu" style="font-size:36px;margin-bottom:8px">🤖</div>
+        <div style="font-weight:600;margin-bottom:4px">L'IA lit le code-barres…</div>
+        <div style="color:#7a8599;font-size:12px">Veuillez patienter</div>
+      </div>
+      <div id="bc-error" style="display:none;padding:10px 14px;background:#e74c3c15;border:1px solid #e74c3c;border-radius:8px;color:#e74c3c;font-size:13px;margin-top:10px"></div>
+      <div id="bc-result" style="display:none"></div>
+    </div>`;
+  if(mode==="gallery")return`
+    <div style="text-align:center">
+      <div style="background:#181c27;border:2px dashed #9b59b6;border-radius:14px;padding:28px 16px;margin-bottom:14px">
+        <div style="font-size:52px;margin-bottom:10px">🖼️</div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:6px">Importer depuis la galerie</div>
+        <div style="color:#7a8599;font-size:12px;margin-bottom:18px">Sélectionne une photo existante d'un produit.</div>
+        <label style="cursor:pointer">
+          <input type="file" accept="image/*" style="display:none" onchange="handleBarcodeImage(this)"/>
+          <span class="btn" style="background:#9b59b6;color:#fff;padding:12px 26px;font-size:15px;border-radius:10px;cursor:pointer">🖼️ Choisir une image</span>
+        </label>
+      </div>
+      <div id="bc-loading" style="display:none;padding:20px;text-align:center">
+        <div class="pu" style="font-size:36px;margin-bottom:8px">🤖</div>
+        <div style="font-weight:600">L'IA lit le code-barres…</div>
+      </div>
+      <div id="bc-error" style="display:none;padding:10px 14px;background:#e74c3c15;border:1px solid #e74c3c;border-radius:8px;color:#e74c3c;font-size:13px;margin-top:10px"></div>
+      <div id="bc-result" style="display:none"></div>
+    </div>`;
+  // manual
+  const examples=[["Coca-Cola 33cl","5449000000996"],["Heineken 25cl","8714800310665"],["Orangina 25cl","3175680011480"],["Perrier 33cl","3179732100097"],["Café Carte Noire","3228857000006"]];
+  const exHTML=examples.map(([n,c])=>`<div onclick="document.getElementById('bc-manual-input').value='${c}'" class="rh" style="display:flex;justify-content:space-between;padding:7px 10px;border-radius:6px;cursor:pointer;border-bottom:1px solid #2a304522"><span style="font-size:12px">${n}</span><span style="font-size:11px;font-family:monospace;color:#3498db">${c}</span></div>`).join("");
+  return`
+    <div>
+      <label style="font-size:11px;font-weight:700;color:#7a8599;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Code EAN-13 ou EAN-8</label>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input id="bc-manual-input" class="inp" placeholder="ex: 5449000000996" style="flex:1;font-family:monospace;font-size:16px;letter-spacing:2px" onkeydown="if(event.key==='Enter')lookupManual()"/>
+        <button class="btn" onclick="lookupManual()" style="background:#3498db;color:#fff;padding:9px 14px;flex-shrink:0">🔍</button>
+      </div>
+      <div style="background:#181c27;border-radius:8px;padding:10px">
+        <div style="font-size:11px;font-weight:700;color:#7a8599;margin-bottom:8px;text-transform:uppercase">Exemples rapides</div>
+        ${exHTML}
+      </div>
+      <div id="bc-loading" style="display:none;padding:20px;text-align:center;margin-top:10px">
+        <div class="pu" style="font-size:32px;margin-bottom:6px">🔍</div>
+        <div style="font-size:13px;color:#7a8599">Recherche dans Open Food Facts…</div>
+      </div>
+      <div id="bc-error" style="display:none;padding:10px 14px;background:#e74c3c15;border:1px solid #e74c3c;border-radius:8px;color:#e74c3c;font-size:13px;margin-top:10px"></div>
+      <div id="bc-result" style="display:none"></div>
+    </div>`;
+}
+function lookupManual(){
+  const code=(document.getElementById("bc-manual-input")?.value||"").trim().replace(/\s/g,"");
+  if(!code)return;
+  lookupBarcode(code);
+}
+async function handleBarcodeImage(input){
+  const file=input?.files?.[0]; if(!file)return;
+  const load=document.getElementById("bc-loading");
+  const err=document.getElementById("bc-error");
+  const res=document.getElementById("bc-result");
+  if(load){load.style.display="block";load.innerHTML='<div class="pu" style="font-size:36px;margin-bottom:8px">🔍</div><div style="font-weight:600;margin-bottom:4px">Lecture du code-barres…</div><div style="color:#7a8599;font-size:12px">Analyse en cours</div>';}
+  if(err)err.style.display="none";
+  if(res)res.style.display="none";
+  try{
+    const imgUrl=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=async()=>{
+      let code=null;
+      for(const scale of[1,1.5,0.75,2]){
+        if(code)break;
+        try{
+          const canvas=document.createElement("canvas");
+          canvas.width=Math.round(img.width*scale);
+          canvas.height=Math.round(img.height*scale);
+          canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+          if(window.ZXing){
+            const reader=new ZXing.MultiFormatReader();
+            const lum=new ZXing.HTMLCanvasElementLuminanceSource(canvas);
+            const bmp=new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(lum));
+            const r=reader.decode(bmp);
+            code=r.getText();
+          }
+        }catch(e){}
+      }
+      URL.revokeObjectURL(imgUrl);
+      if(load)load.style.display="none";
+      if(code){
+        await lookupBarcode(code);
+      }else{
+        if(err){err.innerHTML='⚠️ Code non détecté auto. Tape le numéro manuellement :';err.style.display="block";}
+        let fb=document.getElementById("bc-manual-fallback");
+        if(!fb){
+          fb=document.createElement("div");
+          fb.id="bc-manual-fallback";
+          fb.style.cssText="margin-top:10px;display:flex;gap:8px";
+          fb.innerHTML=`<input id="bc-fallback-input" class="inp" placeholder="EAN-13 ex: 5449000000996" style="flex:1;font-family:monospace;font-size:14px;letter-spacing:2px" onkeydown="if(event.key==='Enter')lookupBarcode(this.value.trim())"/>
+          <button class="btn" onclick="lookupBarcode(document.getElementById('bc-fallback-input').value.trim())" style="background:#3498db;color:#fff;padding:9px 14px;flex-shrink:0">🔍</button>`;
+          if(err&&err.parentNode)err.parentNode.insertBefore(fb,err.nextSibling);
+        }
+      }
+    };
+    img.onerror=()=>{if(load)load.style.display="none";if(err){err.textContent="Impossible de lire l'image.";err.style.display="block";}};
+    img.src=imgUrl;
+  }catch(e){
+    if(load)load.style.display="none";
+    if(err){err.textContent="Erreur lecture image.";err.style.display="block";}
+  }
+}
+async function lookupBarcode(code){
+  code=(code||"").trim().replace(/\D/g,"");
+  if(!code||code.length<6){
+    const err=document.getElementById("bc-error");
+    if(err){err.textContent="Code trop court. Vérifiez le numéro.";err.style.display="block";}
+    return;
+  }
+  const load=document.getElementById("bc-loading");
+  const err=document.getElementById("bc-error");
+  const res=document.getElementById("bc-result");
+  if(load){load.style.display="block";load.innerHTML='<div class="pu" style="font-size:32px;margin-bottom:8px">🔍</div><div style="color:#7a8599;font-size:13px">Recherche dans Open Food Facts…</div>';}
+  if(err)err.style.display="none";
+  if(res)res.style.display="none";
+
+  // Try direct first, then cors proxy fallback
+  const urls=[
+    `https://world.openfoodfacts.org/api/v0/product/${code}.json`,
+    `https://corsproxy.io/?url=https://world.openfoodfacts.org/api/v0/product/${code}.json`
+  ];
+  let data=null;
+  for(const url of urls){
+    try{
+      const r=await fetch(url,{signal:AbortSignal.timeout(8000)});
+      data=await r.json();
+      if(data)break;
+    }catch(e){data=null;}
+  }
+  if(load)load.style.display="none";
+  if(!data){
+    if(err){err.textContent=`Pas de réseau disponible. Code: ${code}`;err.style.display="block";}
+    showBarcodeResult({barcode:code,product_name:"",categories:"",labels:"",quantity:"",brands:"",image_front_url:""});
+    return;
+  }
+  if(data.status===1&&data.product){
+    const p=data.product;
+    showBarcodeResult({barcode:code,product_name:p.product_name_fr||p.product_name||p.product_name_en||"",
+      categories:p.categories||"",labels:p.labels||"",quantity:p.quantity||"",brands:p.brands||"",
+      image_front_url:p.image_front_small_url||p.image_front_url||""});
+  }else{
+    if(err){err.textContent=`Produit inconnu (${code}). Saisissez le nom après import.`;err.style.display="block";}
+    showBarcodeResult({barcode:code,product_name:"",categories:"",labels:"",quantity:"",brands:"",image_front_url:""});
+  }
+}
+function showBarcodeResult(info){
+  const res=document.getElementById("bc-result"); if(!res)return;
+  const catKey=guessCat(info); const cat=TVA[catKey]||{};
+  res.style.display="block";
+  res.innerHTML=`<div class="product-card">
+    ${info.image_front_url?`<img class="product-img" src="${esc(info.image_front_url)}" onerror="this.style.display='none'">`:`<div class="product-img-placeholder">${cat.icon||"📦"}</div>`}
+    <div style="flex:1;min-width:0">
+      <div style="font-weight:700;font-size:15px;margin-bottom:4px">${esc(info.product_name)||"Nom inconnu — à compléter"}</div>
+      ${info.brands?`<div style="font-size:12px;color:#7a8599;margin-bottom:2px">Marque : ${esc(info.brands)}</div>`:""}
+      ${info.quantity?`<div style="font-size:12px;color:#7a8599;margin-bottom:4px">Contenance : ${esc(info.quantity)}</div>`:""}
+      <div style="font-size:11px;color:#4a5568;font-family:monospace;margin-bottom:8px">🔲 ${esc(info.barcode)}</div>
+      <span class="pill" style="background:${cat.color}22;color:${cat.color}">${cat.icon||""} ${cat.label||""} — TVA ${cat.rate||""}%</span>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+    <button class="btn" onclick="document.getElementById('bc-result').style.display='none'" style="background:#1e2333;border:1px solid #2a3045;color:#e8ecf4;padding:9px 16px">↩ Rescanner</button>
+    <button class="btn" onclick="applyBarcodeResult(${JSON.stringify(info).replace(/"/g,'&quot;')})" style="background:#f5a623;color:#000;padding:9px 18px;font-weight:700">✅ Utiliser</button>
+  </div>`;
+}
+function applyBarcodeResult(info){
+  closeModal("modal-barcode");
+  if(currentTab==="inventaire"){fillInventoryFromBarcode(info);}
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCAN FACTURE MODAL
+// ═══════════════════════════════════════════════════════════
+function openScanFacture(){
+  const html=`<div class="overlay" id="modal-scan" onclick="if(event.target===this)closeModal('modal-scan')">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <span class="modal-title">📷 Scanner une facture</span>
+      <button class="modal-close" onclick="closeModal('modal-scan')">×</button>
+    </div>
+    <div id="scan-step-upload">
+      <div onclick="document.getElementById('scan-file').click()" id="scan-dropzone" style="border:2px dashed #2a3045;border-radius:12px;padding:36px 16px;text-align:center;cursor:pointer">
+        <div style="font-size:46px;margin-bottom:10px">📄</div>
+        <div style="font-weight:700;margin-bottom:4px">Appuyer pour choisir une photo</div>
+        <div style="color:#7a8599;font-size:13px">Photo de facture ou bon de livraison</div>
+      </div>
+      <input type="file" id="scan-file" accept="image/*" capture="environment" style="display:none" onchange="handleScanFile(this)"/>
+      <div id="scan-preview" style="display:none;margin-top:10px;text-align:center"></div>
+      <div id="scan-error" style="display:none;margin-top:10px;padding:10px 14px;background:#e74c3c15;border:1px solid #e74c3c;border-radius:8px;color:#e74c3c;font-size:13px"></div>
+      <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn" onclick="closeModal('modal-scan')" style="background:#1e2333;border:1px solid #2a3045;color:#e8ecf4;padding:9px 16px">Annuler</button>
+        <button class="btn" id="scan-analyze-btn" onclick="analyzeScan()" disabled style="background:#4a5568;color:#7a8599;padding:9px 18px;cursor:not-allowed">🤖 Analyser avec IA</button>
+      </div>
+    </div>
+    <div id="scan-step-loading" style="display:none;text-align:center;padding:50px 20px">
+      <div class="pu" style="font-size:46px;margin-bottom:12px">🤖</div>
+      <div style="font-weight:700;font-size:16px;margin-bottom:6px">Analyse en cours…</div>
+      <div style="color:#7a8599;font-size:13px">L'IA identifie les produits et les catégories TVA</div>
+    </div>
+    <div id="scan-step-results" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font-weight:700" id="scan-results-count">0 ligne(s)</span>
+        <span style="font-size:12px;color:#7a8599">Décochez pour ignorer</span>
+      </div>
+      <div id="scan-results-list" style="max-height:340px;overflow-y:auto"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+        <button class="btn" onclick="document.getElementById('scan-step-results').style.display='none';document.getElementById('scan-step-upload').style.display='block'" style="background:#1e2333;border:1px solid #2a3045;color:#e8ecf4;padding:9px 16px">← Retour</button>
+        <button class="btn" onclick="importScanResults()" style="background:#f5a623;color:#000;padding:9px 18px;font-weight:700">✅ Importer</button>
+      </div>
+    </div>
+  </div>
+</div>`;
+  document.getElementById("modals").innerHTML=html;
+}
+let scanB64=null, scanResults=[];
+function handleScanFile(input){
+  const file=input?.files?.[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    scanB64=e.target.result.split(",")[1];
+    const prev=document.getElementById("scan-preview");
+    if(prev){prev.innerHTML=`<img src="${e.target.result}" style="max-height:180px;max-width:100%;border-radius:8px">`;prev.style.display="block";}
+    const btn=document.getElementById("scan-analyze-btn");
+    if(btn){btn.disabled=false;btn.style.background="#f5a623";btn.style.color="#000";btn.style.cursor="pointer";}
+  };
+  reader.readAsDataURL(file);
+}
+async function analyzeScan(){
+  if(!scanB64)return;
+  document.getElementById("scan-step-upload").style.display="none";
+  document.getElementById("scan-step-loading").style.display="block";
+  try{
+    const prompt=`Analyse cette facture. Extrait TOUTES les lignes produits. Catégories : CUISINE_FRAIS(5.5%), CUISINE_SEC(5.5%), CUISINE_SURGELE(5.5%), NOURRITURE_RESTO(10%), BAR_SANS_ALCOOL(10%), BAR_AVEC_ALCOOL(20%), AUTRE_20(20%). Réponds UNIQUEMENT en JSON valide sans markdown : {"supplier":"","ref":"","date":"YYYY-MM-DD","lines":[{"product":"","category":"","qty":1,"unit":"","unitPrice":0,"tvaRate":5.5,"totalHT":0,"totalTTC":0}]}`;
+    // Try claude.ai artifacts API (works when opened via claude.ai)
+    // Falls back to manual entry if not available
+    let text="";
+    try{
+      const resp=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+          messages:[{role:"user",content:[
+            {type:"image",source:{type:"base64",media_type:"image/jpeg",data:scanB64}},
+            {type:"text",text:prompt}
+          ]}]})
+      });
+      const data=await resp.json();
+      text=(data.content?.[0]?.text||"").replace(/```json|```/g,"").trim();
+    }catch(fetchErr){
+      document.getElementById("scan-step-loading").style.display="none";
+      document.getElementById("scan-step-upload").style.display="block";
+      const er=document.getElementById("scan-error");
+      if(er){er.textContent="Analyse IA indisponible hors claude.ai. Utilisez + Achat pour saisir manuellement.";er.style.display="block";}
+      return;
+    }
+    const parsed=JSON.parse(text);
+    scanResults=(parsed.lines||[]).map((l,i)=>({...l,_id:"sl"+i,_supplier:parsed.supplier||"",_ref:parsed.ref||"",_date:parsed.date||today(),_sel:true}));
+    document.getElementById("scan-step-loading").style.display="none";
+    document.getElementById("scan-step-results").style.display="block";
+    renderScanResults();
+  }catch(e){
+    document.getElementById("scan-step-loading").style.display="none";
+    document.getElementById("scan-step-upload").style.display="block";
+    const err=document.getElementById("scan-error");
+    if(err){err.textContent="Erreur d'analyse. Vérifiez que la photo est lisible.";err.style.display="block";}
+  }
+}
+function renderScanResults(){
+  const list=document.getElementById("scan-results-list"); if(!list)return;
+  const selCount=scanResults.filter(l=>l._sel).length;
+  const cnt=document.getElementById("scan-results-count");
+  if(cnt)cnt.textContent=`${selCount} ligne(s) sélectionnée(s)`;
+  list.innerHTML=scanResults.map((l,i)=>{
+    const cat=TVA[l.category]||{};
+    return`<div style="padding:11px 12px;background:${l._sel?"#181c27":"#0f1117"};border-radius:8px;margin-bottom:7px;border:1px solid ${l._sel?"#2a3045":"#2a304566"};opacity:${l._sel?1:.55}">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px">
+        <input type="checkbox" ${l._sel?"checked":""} onchange="toggleScanLine(${i})" style="width:16px;height:16px;cursor:pointer;accent-color:#f5a623"/>
+        <span style="font-weight:600;font-size:13px;flex:1">${esc(l.product)}</span>
+        <span class="pill" style="background:${cat.color}22;color:${cat.color}">${cat.icon||""} TVA ${l.tvaRate}%</span>
+      </div>
+      <div style="display:flex;gap:10px;padding-left:25px;flex-wrap:wrap">
+        <span style="font-size:12px;color:#7a8599">Qté: ${l.qty} ${esc(l.unit)}</span>
+        <span style="font-size:12px;color:#7a8599">HT: ${fmt(l.totalHT)}</span>
+        <span style="font-size:12px;color:#7a8599">TTC: ${fmt(l.totalTTC)}</span>
+      </div>
+    </div>`;
+  }).join("");
+}
+function toggleScanLine(i){scanResults[i]._sel=!scanResults[i]._sel;renderScanResults();}
+function importScanResults(){
+  scanResults.filter(l=>l._sel).forEach(l=>{
+    DB.purchases.unshift({id:uid(),date:l._date,supplier:l._supplier,ref:l._ref,category:l.category,product:l.product,qty:l.qty,unit:l.unit,unitPrice:l.unitPrice,tvaRate:l.tvaRate,totalHT:l.totalHT,totalTTC:l.totalTTC});
+  });
+  saveDB(); closeModal("modal-scan"); renderTab(currentTab);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADD PURCHASE MODAL
+// ═══════════════════════════════════════════════════════════
+function openAddPurchase(){
+  const catOpts=Object.entries(TVA).map(([k,v])=>`<option value="${k}">${v.icon} ${v.label}</option>`).join("");
+  const html=`<div class="overlay" id="modal-purchase" onclick="if(event.target===this)closeModal('modal-purchase')">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">🛒 Nouvel achat</span><button class="modal-close" onclick="closeModal('modal-purchase')">×</button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Date</label><input class="inp" type="date" id="p-date" value="${today()}"/></div>
+      <div class="form-group"><label>Fournisseur *</label><input class="inp" id="p-supplier" placeholder="Metro, Transgourmet…"/></div>
+      <div class="form-group"><label>Référence</label><input class="inp" id="p-ref" placeholder="FAC-001"/></div>
+      <div class="form-group"><label>Catégorie</label><select class="inp" id="p-category" onchange="updatePurchaseTVA()">${catOpts}</select></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Produit *</label><input class="inp" id="p-product" placeholder="Nom du produit"/></div>
+      <div class="form-group"><label>Quantité *</label><input class="inp" type="number" id="p-qty" placeholder="0" oninput="calcPurchase()"/></div>
+      <div class="form-group"><label>Unité</label><input class="inp" id="p-unit" value="kg"/></div>
+      <div class="form-group"><label>Prix unitaire HT (€)</label><input class="inp" type="number" id="p-unitprice" placeholder="0.00" step="0.01" oninput="calcPurchase()"/></div>
+      <div class="form-group"><label>TVA %</label><input class="inp" type="number" id="p-tva" value="5.5" step="0.5" oninput="calcPurchase()"/></div>
+      <div class="form-group"><label>Total HT (€)</label><input class="inp" type="number" id="p-totalht" placeholder="0.00" step="0.01"/></div>
+      <div class="form-group"><label>Total TTC (€)</label><input class="inp" type="number" id="p-totalttc" placeholder="0.00" step="0.01"/></div>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('modal-purchase')" style="background:#1e2333;border:1px solid #2a3045;color:#e8ecf4;padding:9px 16px">Annuler</button>
+      <button class="btn" onclick="savePurchase()" style="background:#f5a623;color:#000;padding:9px 20px">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>`;
+  document.getElementById("modals").innerHTML=html;
+}
+function updatePurchaseTVA(){const cat=document.getElementById("p-category")?.value;if(cat&&TVA[cat]){document.getElementById("p-tva").value=TVA[cat].rate;calcPurchase();}}
+function calcPurchase(){const q=Number(document.getElementById("p-qty")?.value)||0;const u=Number(document.getElementById("p-unitprice")?.value)||0;const t=Number(document.getElementById("p-tva")?.value)||0;const ht=q*u;if(document.getElementById("p-totalht"))document.getElementById("p-totalht").value=ht.toFixed(2);if(document.getElementById("p-totalttc"))document.getElementById("p-totalttc").value=(ht*(1+t/100)).toFixed(2);}
+function savePurchase(){
+  const supplier=document.getElementById("p-supplier")?.value?.trim();
+  const product=document.getElementById("p-product")?.value?.trim();
+  const qty=Number(document.getElementById("p-qty")?.value);
+  if(!supplier||!product||!qty){alert("Fournisseur, produit et quantité requis");return;}
+  DB.purchases.unshift({id:uid(),date:document.getElementById("p-date")?.value||today(),supplier,ref:document.getElementById("p-ref")?.value||"",category:document.getElementById("p-category")?.value||"CUISINE_FRAIS",product,qty,unit:document.getElementById("p-unit")?.value||"kg",unitPrice:Number(document.getElementById("p-unitprice")?.value)||0,tvaRate:Number(document.getElementById("p-tva")?.value)||5.5,totalHT:Number(document.getElementById("p-totalht")?.value)||0,totalTTC:Number(document.getElementById("p-totalttc")?.value)||0});
+  saveDB();closeModal("modal-purchase");renderTab(currentTab);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADD SALE MODAL
+// ═══════════════════════════════════════════════════════════
+function openAddSale(){
+  const catOpts=Object.entries(TVA).map(([k,v])=>`<option value="${k}">${v.icon} ${v.label}</option>`).join("");
+  const html=`<div class="overlay" id="modal-sale" onclick="if(event.target===this)closeModal('modal-sale')">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header"><span class="modal-title">💰 Saisir CA</span><button class="modal-close" onclick="closeModal('modal-sale')">×</button></div>
+    <div style="display:grid;gap:10px">
+      <div class="form-group"><label>Date</label><input class="inp" type="date" id="s-date" value="${today()}"/></div>
+      <div class="form-group"><label>Catégorie</label><select class="inp" id="s-category" onchange="updateSaleTVA()">${catOpts}</select></div>
+      <div class="form-group"><label>Libellé *</label><input class="inp" id="s-label" placeholder="CA Cuisine, CA Bar…"/></div>
+      <div class="form-group"><label>Montant HT (€) *</label><input class="inp" type="number" id="s-ht" placeholder="0.00" step="0.01" oninput="calcSale()"/></div>
+      <div class="form-group"><label>TVA %</label><input class="inp" type="number" id="s-tva" value="10" step="0.5" oninput="calcSale()"/></div>
+      <div class="form-group"><label>Montant TTC (€)</label><input class="inp" type="number" id="s-ttc" placeholder="0.00" step="0.01"/></div>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('modal-sale')" style="background:#1e2333;border:1px solid #2a3045;color:#e8ecf4;padding:9px 16px">Annuler</button>
+      <button class="btn" onclick="saveSale()" style="background:#f5a623;color:#000;padding:9px 20px">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>`;
+  document.getElementById("modals").innerHTML=html;
+}
+function updateSaleTVA(){const cat=document.getElementById("s-category")?.value;if(cat&&TVA[cat]){document.getElementById("s-tva").value=TVA[cat].rate;calcSale();}}
+function calcSale(){const h=Number(document.getElementById("s-ht")?.value)||0;const t=Number(document.getElementById("s-tva")?.value)||0;if(document.getElementById("s-ttc"))document.getElementById("s-ttc").value=(h*(1+t/100)).toFixed(2);}
+function saveSale(){
+  const label=document.getElementById("s-label")?.value?.trim();
+  const amountHT=Number(document.getElementById("s-ht")?.value);
+  if(!label||!amountHT){alert("Libellé et montant requis");return;}
+  const date=document.getElementById("s-date")?.value||today();
+  DB.sales.unshift({id:uid(),date,month:mKey(date),category:document.getElementById("s-category")?.value||"NOURRITURE_RESTO",labelCA:label,amountHT,tvaRate:Number(document.getElementById("s-tva")?.value)||10,amountTTC:Number(document.getElementById("s-ttc")?.value)||amountHT});
+  saveDB();closeModal("modal-sale");renderTab(currentTab);
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+function closeModal(id){const el=document.getElementById(id);if(el)el.remove();}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+renderTab("dashboard");
+</script>
+</body>
+</html>
